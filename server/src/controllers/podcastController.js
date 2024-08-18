@@ -77,7 +77,9 @@ export const getByProjectId = async (req, res) => {
     const { projectId } = req.params;
 
     try {
-        const podcasts = await PodcastSchema.find({ projectId: projectId });
+        let podcasts = await PodcastSchema.find({
+            projectId: projectId
+        });
         res.status(200).json({ podcasts });
     } catch (error) {
         res.status(500).json({ message: 'Could not get podcast', error: error });
