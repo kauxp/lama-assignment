@@ -16,7 +16,6 @@ import AccountSettings from "./AccountSettings";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-
 const ProjectWindow = () => {
 
     const { id } = useParams();
@@ -38,23 +37,23 @@ const ProjectWindow = () => {
                 if (!token) {
                     throw new Error('No token found');
                 }
-                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/podcast/${id}`, {
+                const url = window.location.href;
+                const projectId = url.split('/').pop();
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/podcast/${projectId}/project`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
                 });
-                const formattedPodcasts = await response.data.podcasts.map(async (podcast) => {
-                    const formattedDate = format(new Date(podcast.uploadDateAndTime), "dd MMM yy | HH:mm");
-                    return new Promise((resolve, reject) => {
-                        resolve({
-                            _id: podcast._id,
-                            podcastName: podcast.podcastName,
-                            uploadDateAndTime: formattedDate,
-                            status: podcast.status
-                        });
-                    }
-                    );
-                })
+                const formattedPodcasts = response.data.podcasts.map((podcast, index) => {
+                    return {
+                        idx: index + 1,
+                        podcastName: podcast.podcastName,
+                        uploadDateAndTime: podcast.uploadDateAndTime,
+                        status: podcast.status,
+                        _id: podcast._id
+                    };
+                }
+                );
 
                 setPodcastList(formattedPodcasts);
             } catch (error) {
@@ -107,7 +106,7 @@ const ProjectWindow = () => {
                 throw new Error('No token found');
             }
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/podcast`,
-                {   
+                {
                     podcastName: podcastName,
                     podcastUrl: podcastUrl,
                     projectId: id,

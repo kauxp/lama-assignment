@@ -13,6 +13,6 @@ router.post('/edit/:id', updatePodcast);
 
 router.get('podcast/:id', getPodcastById);
 
-router.get('/:id', getByProjectId);
+router.get('/:projectId/project', getByProjectId);
 
 export default router;
