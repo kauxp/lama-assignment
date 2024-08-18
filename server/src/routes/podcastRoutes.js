@@ -11,7 +11,7 @@ router.delete('/:id', deletePodcast);
 
 router.post('/edit/:id', updatePodcast);
 
-router.get('podcast/:id', getPodcastById);
+router.get('/:id', getPodcastById);
 
 router.get('/:projectId/project', getByProjectId);
 

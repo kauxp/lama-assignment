@@ -1,7 +1,32 @@
+import { useEffect, useState } from "react";
 import ProjectWindow from "./ProjectWindow";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Project = ({ newProject}) => {
+const Project = ({ newProject }) => {
+    const [numEpisodes, setNumEpisodes] = useState(0);
+    useEffect(() => {
+        // make a request to the backend to find number of episodes
+        const getEpisodes = async () => {
+            console.log(newProject._id);
+
+            const res = await axios.get(`http://localhost:5000/podcast/${newProject._id}/project`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    }
+                }
+            ).then((result) => {
+                console.log(result.data.podcasts.length);
+                setNumEpisodes(result.data.podcasts.length);
+            }).catch((err) => {
+
+            });
+            return res;
+        }
+        getEpisodes();
+    }, []);
 
     const projectId = newProject._id;
     const name = newProject.projectName;
@@ -21,7 +46,7 @@ const Project = ({ newProject}) => {
 
             <div className="flex flex-col p-5 justify-start items-start">
                 <div className="text-[#7E22CE] font-semibold">{name}</div>
-                <div>4 Episodes</div>
+                <div>{numEpisodes} Episodes</div>
                 <div className="text-slate-400 mt-4">Last edited a week ago</div>
             </div>
         </div>
