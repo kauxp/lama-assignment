@@ -13,6 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const PORT = process.env.PORT || 5000;
 
 mongoose.connect(process.env.MONGO_URL)
     .then(() => {
@@ -28,6 +29,6 @@ app.use('/project', authToken, projectRouter);
 app.use('/podcast', authToken, podcastRouter);
 
 
-app.listen(5000, 'localhost', () => {
+app.listen(PORT, 'localhost', () => {
     console.log("app is running on port 5000");
 })
