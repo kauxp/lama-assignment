@@ -29,6 +29,6 @@ app.use('/project', authToken, projectRouter);
 app.use('/podcast', authToken, podcastRouter);
 
 
-app.listen(PORT, () => {
+app.listen(PORT, 'localhost', () => {
     console.log("app is running on port 5000");
 })
