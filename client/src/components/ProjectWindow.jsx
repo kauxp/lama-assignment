@@ -38,7 +38,7 @@ const ProjectWindow = () => {
                 if (!token) {
                     throw new Error('No token found');
                 }
-                const response = await axios.get(`http://localhost:5000/podcast/${id}`, {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/podcast/${id}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -71,7 +71,7 @@ const ProjectWindow = () => {
             if (!token) {
                 throw new Error('No token found');
             }
-            axios.delete(`http://localhost:5000/podcast/podcast/${podcastIdDel}`, {
+            axios.delete(`${process.env.REACT_APP_BACKEND_URL}/podcast/podcast/${podcastIdDel}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -106,7 +106,7 @@ const ProjectWindow = () => {
             if (!token) {
                 throw new Error('No token found');
             }
-            const response = await axios.post('http://localhost:5000/podcast',
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/podcast`,
                 {   
                     podcastName: podcastName,
                     podcastUrl: podcastUrl,
