@@ -12,7 +12,7 @@ const EditWindow = ({ onClick, podcast }) => {
         const fetchPodcastScript = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`http://localhost:5000/podcast/podcast/${podcast._id}`, {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/podcast/podcast/${podcast._id}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -37,7 +37,7 @@ const EditWindow = ({ onClick, podcast }) => {
         const podcastId = podcast._id;
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post(`http://localhost:5000/podcast/edit/${podcastId}`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/podcast/edit/${podcastId}`, {
                 podcastScript: scriptRef.current.innerText
             }, {
                 headers: {

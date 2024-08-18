@@ -25,7 +25,7 @@ const CreateNewProject = () => {
                 throw new Error('No token found');
             }
 
-            const response = await axios.get('http://localhost:5000/project', {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/project`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -60,7 +60,7 @@ const CreateNewProject = () => {
                 throw new Error('No token found');
             }
 
-            const response = await axios.post('http://localhost:5000/project',
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/project`,
                 { projectName: projectName },
                 {
                     headers: {
