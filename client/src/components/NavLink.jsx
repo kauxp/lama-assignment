@@ -1,9 +1,12 @@
+import { Link } from 'react-router-dom';
 import Home from '../assets/Home';
 const NavLink = () => {
     return (
-        <div className="flex space-x-2 items-center  justify-center ">
+        <div className="flex gap-3 items-center  justify-center ">
             <Home />
-            <div className='flex justify-center items-center'><span className='text-[#999999]'>Home Page / Sample Project / </span><span className='text-[#7E22CE]'>Add your podcast</span></div>
+            <Link to="/create-new-project">
+                <div className='flex justify-center items-center'><span className='text-[#999999]'>Home Page</span><span className='text-[#7E22CE]'></span></div>
+            </Link>
         </div>
     )
 }

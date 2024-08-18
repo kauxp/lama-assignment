@@ -3,8 +3,29 @@ import { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 
 const EditWindow = ({ onClick, podcast }) => {
+
+    useEffect(() => {
+        // set podcast to local storage
+        if (podcast) {
+            localStorage.setItem('podcast', JSON.stringify(podcast));
+        }
+
+        if (!podcast) {
+            const podcast = JSON.parse(localStorage.getItem('podcast'));
+            if (podcast) {
+                localStorage.setItem('podcast', JSON.stringify(podcast));
+            }
+        }
+    }
+        , [podcast]);
+
     const [isEditing, setIsEditing] = useState(false);
-    const [text, setText] = useState("");
+    const [text, setText] = useState(localStorage.getItem('podcastScript') || "");
+
+    const handleSetText = (text) => {
+        setText(text);
+        localStorage.setItem('podcastScript', text);
+    }
 
     const scriptRef = useRef();
 
@@ -12,12 +33,12 @@ const EditWindow = ({ onClick, podcast }) => {
         const fetchPodcastScript = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/podcast/podcast/${podcast._id}`, {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/podcast/${podcast._id}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
                 });
-                setText(response.data.podcast.podcastScript);
+                handleSetText(response.data.podcast.podcastScript);
             } catch (err) {
                 console.error('Error fetching podcast script:', err);
             }
@@ -29,6 +50,9 @@ const EditWindow = ({ onClick, podcast }) => {
     }, [podcast._id]);
 
     const handleEditClick = () => {
+        if (text.length === 0) {
+            scriptRef.current.innerText = "";
+        }
         setIsEditing(true);
     }
 
@@ -37,6 +61,7 @@ const EditWindow = ({ onClick, podcast }) => {
         const podcastId = podcast._id;
         const token = localStorage.getItem('token');
         try {
+            console.log("Podcast ID:", podcastId);
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/podcast/edit/${podcastId}`, {
                 podcastScript: scriptRef.current.innerText
             }, {
@@ -45,7 +70,7 @@ const EditWindow = ({ onClick, podcast }) => {
                 }
             });
             console.log("Save response:", response);
-            setText(scriptRef.current.innerText);
+            handleSetText(scriptRef.current.innerText);
             setIsEditing(false);
         } catch (err) {
             console.error('Error saving edited text:', err);
@@ -91,7 +116,9 @@ const EditWindow = ({ onClick, podcast }) => {
             </div>
             <div className="bg-white shadow-lg flex flex-col items-start p-9 rounded-[5px] pl-16 space-y-9 w-full">
                 <div className="text-[#7E22CE] font-semibold text-lg">Speaker</div>
-                <div ref={scriptRef} className="text-[#63635E] text-left text-lg w-full outline-none" contentEditable={isEditing}>{text}</div>
+                <div ref={scriptRef} className="text-[#63635E] text-left text-lg w-full outline-none" contentEditable={isEditing}>
+                    {text.length > 0 ? text : "Add your script here"}
+                </div>
             </div>
         </div>
     )

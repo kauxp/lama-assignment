@@ -19,16 +19,20 @@ import axios from "axios";
 const ProjectWindow = () => {
 
     const { id } = useParams();
+    const [vewBox, setViewBox] = useState(localStorage.getItem('viewBox') || 'podcast');
     const [viewPodcast, setViewPodcast] = useState('');
     const [podcastUrl, setPodcastUrl] = useState('');
-    const [accountWindow, setAccountWindow] = useState(false);
-    const [editWindow, setEditWindow] = useState(false);
     const [podcastList, setPodcastList] = useState([]);
     const [uploadYt, setUploadYt] = useState(false);
     const [background, setBackground] = useState(true);
     const [podcastName, setPodcastName] = useState('');
     const [header, setHeader] = useState('');
     const [deleting, setDeleting] = useState(false);
+
+    const handleViewBoxChange = (box) => {
+        localStorage.setItem('viewBox', box);
+        setViewBox(box);
+    }
 
     useEffect(() => {
         const fetchPodcastList = async () => {
@@ -70,7 +74,7 @@ const ProjectWindow = () => {
             if (!token) {
                 throw new Error('No token found');
             }
-            axios.delete(`${process.env.REACT_APP_BACKEND_URL}/podcast/podcast/${podcastIdDel}`, {
+            axios.delete(`${process.env.REACT_APP_BACKEND_URL}/podcast/${podcastIdDel}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -92,12 +96,8 @@ const ProjectWindow = () => {
         }
     }
     const renderAccountWindow = () => {
-        setAccountWindow(!accountWindow);
-        setEditWindow(false);
+        handleViewBoxChange("account");
     }
-
-
-
 
     const handleUpload = async () => {
         try {
@@ -146,8 +146,7 @@ const ProjectWindow = () => {
         }
     }
     const handleBack = () => {
-        setEditWindow(false);
-        setAccountWindow(false);
+        handleViewBoxChange("podcast");
     }
     const renderUploadYt = (header) => {
         setUploadYt(!uploadYt);
@@ -167,17 +166,17 @@ const ProjectWindow = () => {
 
     const renderEditWindow = (e) => {
         setViewPodcast(e);
-        setEditWindow(!editWindow);
+        handleViewBoxChange("edit");
         console.log("currPod ", e);
     }
 
 
     return (
-        <div className={`flex relative ${background ? 'backdrop-none' : 'backdrop-blur-3xl'}`}>
+        <div className={`w-full flex relative ${background ? 'backdrop-none' : 'backdrop-blur-3xl'}`}>
 
             <NavBar userPage={renderAccountWindow} />
 
-            <div className={`p-7 pl-20 w-full flex flex-col pr-16 items-start gap-4 ${background ? 'bg-[#F9F9F9]' : ''}`}>
+            <div className={` pt-5 pl-10 pr-10 w-[82vw] flex flex-col items-start gap-3 ${background ? 'bg-[#F9F9F9]' : ''}`}>
                 <div className="flex justify-between w-full">
                     <NavLink />
                     <div className="flex items-center justify-center gap-4">
@@ -188,7 +187,7 @@ const ProjectWindow = () => {
                     </div>
                 </div>
 
-                {!editWindow && !accountWindow && (
+                {vewBox == "podcast" && (
                     <div className="flex flex-col items-start gap-4">
                         <div className="font-bold text-4xl">Add Podcast</div>
                         <div className="flex gap-x-3">
@@ -199,7 +198,7 @@ const ProjectWindow = () => {
 
                         {(podcastList.length == 0 && <div className="w-[1288px] h-[471px] bg-white rounded-[15px] flex flex-col items-center justify-center gap-y-5 shadow-lg">
                             <UploadCloud />
-                            <div className="text-3xl">Select a file or drag and drop here (Podcast Media or Transcription Text)</div>
+                            <div className="text-2xl">Select a file or drag and drop here (Podcast Media or Transcription Text)</div>
                             <div className="text-xl text-slate-500">MP4, MOV, MP3, WAV, PDF, DOCX or TXT file </div>
                             <button onClick={() => renderUploadYt("Youtube")} className="border-[#7E22CE] border-solid border-[2px] text-[#7E22CE]  p-3 text-2xl  rounded-[50px]">Select File</button>
                             {uploadYt && <UploadYt onClick={handelCancel} onUpload={handleUpload} onInput={handelNameChange} onUrl={handelUrlChange} header={header} />}
@@ -239,8 +238,8 @@ const ProjectWindow = () => {
                 )}
 
 
-                {editWindow && <EditWindow onClick={handleBack} podcast={viewPodcast} />}
-                {accountWindow && <AccountSettings onClick={handleBack} />}
+                {vewBox == "edit" && <EditWindow onClick={handleBack} podcast={viewPodcast} />}
+                {vewBox == "account" && <AccountSettings onClick={handleBack} />}
             </div>
 
         </div>
